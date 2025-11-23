@@ -75,40 +75,27 @@ def save_state(tracks):
 
 
 def main():
-    print("Iniciando monitor de playlist de SoundCloud...")
-    previous_tracks = load_previous_state()
+    print("Chequeando playlist de SoundCloud una vez...")
 
-    # Primera carga
+    previous_tracks = load_previous_state()
     current_tracks = fetch_playlist_tracks()
+
     if not previous_tracks:
-        # Primera vez: guardamos estado pero no avisamos de todo
         save_state(current_tracks)
         print(f"Estado inicial guardado con {len(current_tracks)} pistas.")
+        return
+
+    new_tracks = [t for t in current_tracks if t not in previous_tracks]
+
+    if new_tracks:
+        for track in new_tracks:
+            msg = f"🎵 Nueva canción añadida a la playlist:\n{track}\n\n{PLAYLIST_URL}"
+            send_telegram_message(msg)
+            print("Notificado:", track)
+
+        save_state(current_tracks)
     else:
-        print(f"Estado anterior: {len(previous_tracks)} pistas.")
-
-    while True:
-        try:
-            current_tracks = fetch_playlist_tracks()
-            print(f"Playlist actual: {len(current_tracks)} pistas.")
-            
-            # Detectar nuevas canciones (las que no estaban antes)
-            new_tracks = [t for t in current_tracks if t not in previous_tracks]
-
-            if new_tracks:
-                for track in new_tracks:
-                    msg = f"🎵 Nueva canción añadida a la playlist:\n{track}\n\n{PLAYLIST_URL}"
-                    send_telegram_message(msg)
-                    print("Notificado:", track)
-
-                # Actualizamos estado
-                save_state(current_tracks)
-                previous_tracks = current_tracks
-
-        except Exception as e:
-            print("Error:", e)
-
-        time.sleep(CHECK_INTERVAL_SECONDS)
+        print("Sin nuevas canciones.")
 
 
 if __name__ == "__main__":
