@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 TELEGRAM_CHAT_ID = int(os.environ["TELEGRAM_CHAT_ID"])
 
-PLAYLIST_URL = "https://soundcloud.com/usuario/sets/mi-playlist"
+PLAYLIST_URL = "https://soundcloud.com/doncucho/sets/prueba"
 CHECK_INTERVAL_SECONDS = 300  # cada 5 minutos
 
 STATE_FILE = "playlist_state.json"
